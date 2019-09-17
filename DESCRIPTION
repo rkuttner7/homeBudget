@@ -1,0 +1,29 @@
+Package: homeBudget
+Type: Package
+Title: Maintain records and report on spending, income, and savings
+Version: 0.1.0
+Author: person("Rafael", "Kuttner", email = "r.i.kuttner@gmail.com",
+                  role = c("aut", "cre"))
+Maintainer: The package maintainer <r.i.kuttner@gmail.com>
+URL: https://github.com/rkuttner7/homeBudget
+BugReports: https://github.com/rkuttner7/homeBudget/issues
+Description: Keep a record of all spending, including both credit
+    cards and checks, as well as income from salaries, 
+    interest, and investments. Report on categories of spending
+    and relative balance to earnings. Also, check for irregular
+    values such as fraud or incorrect monthly billing totals.
+Depends: R (>= 2.10)
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports: 
+    data.table
+Suggests: 
+    DT,
+    ggplot2,
+    knitr,
+    lubridate,
+    testthat,
+    rmarkdown
+VignetteBuilder: knitr
