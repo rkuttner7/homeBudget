@@ -13,17 +13,17 @@ Description: Keep a record of all spending, including both credit
     and relative balance to earnings. Also, check for irregular
     values such as fraud or incorrect monthly billing totals.
 Depends: R (>= 2.10)
-License: file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
 Imports: 
-    data.table
+    data.table,
+    stringr
 Suggests: 
     DT,
     ggplot2,
     knitr,
-    lubridate,
     testthat,
     rmarkdown
 VignetteBuilder: knitr

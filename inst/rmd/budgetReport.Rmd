@@ -1,0 +1,211 @@
+---
+title: "Budget Report"
+author: "Rafael Kuttner"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_notebook:
+    highlight: tango
+    mathjax: "default"
+    theme: united
+    toc: no
+    toc_depth: 3
+    toc_float: yes
+---
+
+Summary:  
+
+Expense report for home budgeting.
+
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = (normalizePath(getwd())) )
+
+knitr::opts_chunk$set(fig.width = 12, fig.asp = 1/2)
+require('magrittr') # load for "%>%" used to format DT tables
+
+```
+
+```{r setData_Func, include=TRUE, echo=FALSE}
+  # load data
+   creditCardHistory <- data.table::copy(homeBudget::creditCardExample)
+```
+
+```{r computeSummaries, include=FALSE}
+ 
+  # bucket description of credit card transactions into budget categories
+  creditCardHistory[ , ':='(category = homeBudget::addCategories(Description = Description,
+                                                myCategories = categoryPatternsExample))]
+  
+  # summary of the continuous values for use in data.table.
+  summaryDT <- function(x, digits = NULL, suffix = NULL){
+    N <- function(x) length(x)
+    q25 <- function(x) quantile(x, 0.25,names = FALSE, type = 2)
+    q50 <- function(x) quantile(x, 0.5,names = FALSE, type = 2)
+    q75 <- function(x) quantile(x, 0.75,names = FALSE, type = 2)
+    stats <- c(N, min, q25, q50, mean, sd, q75, max)
+    results <- lapply(stats, function(f,x){f(x)},x)
+    if(!is.null(digits)){
+      results <- lapply(results, function(x){round(x, digits)})
+    }
+    names(results) = paste0(c("N", "min","q25","q50","mean","sd","q75","max"), 
+                            seperator = suffix)
+    results
+  }
+  
+  # computing rolling sums of ordered observations.
+  # This functions computes the rolling sums for the previous and including 'k' days.
+  rollSumTime <- function(x, time, k){
+    if(anyDuplicated(time) > 0){
+      stop("Duplicates in `time` not allowed")
+    }
+    unlist(Map(function(x, time, k, timeList){
+      d <- as.numeric(timeList) - as.numeric(time)
+      sum(x[d <= 0 & d > -k])
+    }, list(x), time, list(k), list(timeList = time)))
+  }
+  
+  # For days with no spending append a record to the data-set for an amount spent of $0.
+  appendDaysAbsent <- function(creditCardHistory,
+                             minDate = NULL,
+                             maxDate = NULL,
+                             category = NULL){
+    if(is.null(minDate)) minDate <- min(creditCardHistory$PostingDate)
+    if(is.null(maxDate)) maxDate <- max(creditCardHistory$PostingDate)
+    padDates <- setdiff(seq.Date(minDate, maxDate, by = 1),
+                        creditCardHistory$PostingDate)
+    if(length(padDates) > 0){
+      allDatesDT <- data.table::data.table("PostingDate" = padDates,
+                                           "Amount" = 0)
+      if(!is.null(category)) allDatesDT[ , ':='(category = category)]
+    } else return(creditCardHistory)
+    data.table::rbindlist(l = list(creditCardHistory, allDatesDT), 
+                          use.names = TRUE, fill = TRUE)
+  }
+  
+  creditCardHistoryPad <- appendDaysAbsent(creditCardHistory)
+  creditCardHistoryPad[, ':='(category = "Total")]
+  
+  creditCardHistoryPad <-
+    data.table::rbindlist(l = list(creditCardHistoryPad,
+                data.table::rbindlist(l = 
+                          lapply(X = unique(creditCardHistory$category), 
+         FUN = function(x){appendDaysAbsent(creditCardHistory[x==category], 
+                                            minDate = min(creditCardHistory$PostingDate),
+                                            maxDate = max(creditCardHistory$PostingDate),
+                                            category = x)
+           }),
+         use.names = TRUE, fill = TRUE)))
+  
+  # rolling sum data
+  rollingSumData <- creditCardHistoryPad[,.(Amount = sum(Amount)),
+                                      by = c("category", "PostingDate")
+                                      ][ ,":="(rollAmount= rollSumTime(x = Amount,
+                                           time = PostingDate,
+                                           k = 28),
+                        minDate = min(PostingDate),
+                        minN = .N), by = "category"][(minDate + 28 < PostingDate |
+                                                        minN ==1), ]
+  
+
+    # Summary of monthly data
+    monthRollSumSummary <- rollingSumData[ , append(summaryDT(x = rollAmount,
+                                                                   digits = 1), 
+                                            list("N_records" = sum(Amount != 0))),
+                                   by = "category"
+                                   ][rev(order(q50)), ]
+  
+  # move the days with expenses 'N_records' for reading clarity of printed tables
+  mycolnames <- names(monthRollSumSummary)
+  data.table::setcolorder(x = monthRollSumSummary,
+                          neworder = c(mycolnames[1:2],
+                                       "N_records",
+                                       mycolnames[3:(length(mycolnames)-1)]))
+  mycolnames <- NULL
+```
+
+
+<script>
+$(document).ready(function() {
+  $('#myDiv').appendTo('#first-tab-sec');
+});
+</script>
+
+<div id="myDiv">
+```{r roll30Summary, include=TRUE, echo=FALSE}
+DT::datatable(monthRollSumSummary[ , .SD, 
+                                 .SDcols = setdiff(names(monthRollSumSummary),
+                                                   c("N", "category"))], 
+                colnames = c('N days' = 'N_records',
+                             "Std. Dev." = "sd"),
+                caption = "Monthly Spending",
+                rownames = as.character(monthRollSumSummary$category),
+                options = list(pageLength = nrow(monthRollSumSummary)))
+```
+</div>
+  
+# Expenses {.tabset}  
+
+## report {.tabset .tabset-fade #first-tab-sec}  
+```{r expensePlotTotal, include=TRUE, echo=FALSE}
+  ggplot2::ggplot(data = rollingSumData[category=="Total"],
+                ggplot2::aes(x=PostingDate, y=rollAmount)) +
+    ggplot2::labs(x = "Date", y = "Dollars",
+                  title = "Total Spending", subtitle = "28 day rolling sum",
+                  caption = "Highlighted area contains 50% of monthly spending & dashed line is the median") +
+    ggplot2::geom_point()  +
+    ggplot2::geom_hline(yintercept = monthRollSumSummary[category=="Total"]$q50,
+                        linetype = 2, size = 1,
+                        colour="red") +
+      ggplot2::annotate("rect", fill = "red", alpha = 0.5,
+                      xmin = as.Date(-Inf, origin = Sys.Date()),
+                      xmax = as.Date(Inf, origin = Sys.Date()),
+                      ymin = monthRollSumSummary[category=="Total"]$q25,
+                      ymax = monthRollSumSummary[category=="Total"]$q75)
+
+```
+  
+### Daily   
+```{r expensePlot, include=TRUE, echo=FALSE}
+ggplot2::ggplot(creditCardHistory[,.(Amount = sum(Amount)),
+                                      by = c("category", "PostingDate")
+                                      ],
+                ggplot2::aes(x=PostingDate, y=Amount)) +
+    ggplot2::labs(x = "Date", y = "Dollars",
+                  title = "Expenses per day", 
+                  subtitle = "Spending by Category") +
+    ggplot2::geom_point()+ggplot2::facet_wrap(~category, scales = "free_y", 
+                                              ncol = 3) +
+    ggplot2::scale_x_date(labels = scales::date_format("%m-%Y")) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle=30, hjust=1))
+
+```
+
+
+### Rolling 
+```{r expensePlotRoll, include=TRUE, echo=FALSE}
+ggplot2::ggplot(rollingSumData[!(category=="Total" | Amount==0)],
+                ggplot2::aes(x = PostingDate, y = rollAmount)) +
+    ggplot2::labs(x = "Date", y = "Dollars",
+                  title = "28 day rolling sum", 
+                  subtitle = "Spending by Category") +
+    ggplot2::geom_point()+ggplot2::facet_wrap(~category, scales = "free_y", 
+                                              ncol = 3) +
+    ggplot2::scale_x_date(labels = scales::date_format("%m-%Y")) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle=30, hjust=1))
+
+```
+  
+
+
+## raw data
+```{r expenseTable, include=TRUE, echo=FALSE}
+  data.table::setorderv(creditCardHistory, "PostingDate")
+DT::datatable(creditCardHistory[ , .(PostingDate, Amount, category, Description)])
+  
+```
+
+#
+
+<br>
+<br>
+

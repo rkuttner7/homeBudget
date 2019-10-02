@@ -1,0 +1,101 @@
+---
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{getting-started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+                      
+library(homeBudget)
+```
+
+# Import New Data
+
+To start your home budget use the function `read_csvCreditCard()` to load your credit card statement into R. The statements must be csv text documents which can be downloaded from your online bank account. For example, if you have saved your most recent JP Morgan Chase statement in the directory `/home/user/budget` as `myChaseStatement.csv` you would load it using the following:
+
+```r
+  read_csvCreditCard(file = "/home/user/budget/myChaseStatement.csv", 
+                     company = "Chase")
+```
+
+The argument `company` indicates the company responsible for the credit card and determines how to load the csv data so there is a consistent structure. Presently the following companies are supported:  
+
+> `r toString(shQuote(eval(formals(read_csvCreditCard)$company)))`  
+
+Please contact the maintainer to request additional companies.
+  
+# Save Data  
+
+Rather than loading every csv every session we can save the data in a single file using the function `saveCreditCard()`.
+```r
+  saveCreditCard(path = "/home/user/budget", creditCardHistory)
+```
+This saves a file entitled `creditCardHistory.rda` onto your computer at the location specified in `path`. Be sure that your previous home budget data has been properly loaded
+and appended before saving as the contents will be overwritten with the new file (*see below*).
+
+# Load Data  
+
+In subsequent sessions you can load the saved history of your credit card transactions `creditCardHistory.rda` from the location that it was previously saved.
+```r
+  loadCreditCard(path = "/home/user/budget")
+```
+
+# Appending data
+
+Access to your csv data may be limited to recent statements. For a comprehensive budget we will want to keep an ongoing history of all transactions by appending new csv statements onto the saved history `creditCardHistory.rda`.  
+
+  
+Here's a typical scenerio:  
+you want to add recent statements from multiple credit cards to your home budget.  
+```r
+ myOldData <- loadCreditCard(path = "/home/user/budget")
+ myNewData <- read_csvCreditCard(file = "/home/user/budget/myNewChaseStatement.csv", 
+                                 company = "Chase")
+ someAmExData <- read_csvCreditCard(file = "/home/user/budget/AmEx_20020601.csv", 
+                                 company = "American Express")
+ allData <- appendCreditCardData(myOldData, myNewData, someAmExData)
+ saveCreditCard(path = "/home/user/budget",
+                creditCardHistory = allData)
+```
+
+We load the prior data stored on your computer in the file `creditCardHistory.rda` into our current R session and name the table `myOldData`. Then we read in a new csv credit card statement named `myNewChaseStatement.csv` and call this `myNewData`. Similarly, there is new American Express data named `AmEx_20020601.csv` that is read into a table we will call `someAmExData`. To combine the new and old datasets we use `appendCreditCardData()` to get a complete history which we name `allData`. We save the complete history back to our computer, overwritting `creditCardHistory.rda`, for future use.
+
+# Budget Categories
+
+
+The budget categories are defined in a list of named character vectors. Each category contains a string of patterns to match the description in the credit card statement. This can either be a substring of the longer description or include regex operators, as detailed within [ICU regular expressions](http://userguide.icu-project.org/strings/regexp). The package includes a  list of category patterns for a typical budget and is documented in `?categoryPatternsExample`.
+  
+
+The `Description` is the text provided by the credit card company describing the purchase. 
+```{r simpleBudgetDescription}
+  Description <- c('rent 2019 march', 
+                   'Happy Co. gas 20190601',
+                   'New fancy restaurant')
+```
+  
+A simple budget category could look like:
+```{r simpleBudgetCategory}
+  myCategories <- list(housing = c('rent', 'Hardware Inc'),
+                       transportation = 'gas')
+```  
+  
+We convert descriptions of credit card transaction into discrete categories using `addCategories`.
+  
+    
+```{r exampleaddCategories}
+
+  addCategories(Description = Description, myCategories)
+
+```
+The description `'rent 2019 march'` has been assigned to `housing` because the substring `'rent'` is part of that budget category. Notice that `'New fancy restaurant'` is categorized as `MISSING` because none of the patterns in any of the budget categories match it. We can create a new budget category `entertainment`.
+```{r exampleaddCategoriesall}
+  myCategories <- list(housing = c('rent', 'Hardware Inc'),
+                       transportation = 'gas',
+                       entertainment = "restaurant")
+  addCategories(Description = Description, myCategories)
+
+```
