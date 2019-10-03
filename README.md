@@ -5,7 +5,7 @@ homeBudget
 
 <!-- badges: start -->
 <!-- badges: end -->
-The goal of homeBudget is to make monitoring expenses easy. Collect all expenses into one place, in a consistent form, with custom categories.
+The goal of homeBudget is to make monitoring expenses easy. Keep a record of all spending in one place in a consistent form with custom categories.
 
 Installation
 ------------
@@ -22,4 +22,20 @@ Windows users also must first install [Rtools](http://cran.rstudio.com/bin/windo
 Resources
 ---------
 
-For details on uploading csv statements as well as saving and loading your data see the `getting-started` vingette and for an expense report example see `\rmd\budgetReport.Rmd`.
+#### Vingette
+
+For details on uploading csv statements as well as saving and loading your data see the `getting-started` vingette.
+
+``` r
+vignette("getting-started", package = "homeBudget")
+```
+
+<br>
+
+#### Report Template
+
+Here is an example of using `homeBudget` to create an [expense report](https://github.com/rkuttner7/homeBudget/blob/master/inst/rmd/budgetReport.html). Feel free to use this as a template for your own budgeting. The code can be found here:
+
+``` r
+system.file(package = "homeBudget", "rmd", "budgetReport.Rmd")
+```

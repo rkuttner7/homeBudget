@@ -3,7 +3,9 @@ title: "Budget Report"
 author: "Rafael Kuttner"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_notebook:
+  html_document:
+    self_contained: FALSE
+    lib_dir: libs  
     highlight: tango
     mathjax: "default"
     theme: united
@@ -20,7 +22,7 @@ Expense report for home budgeting.
 ```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = (normalizePath(getwd())) )
 
-knitr::opts_chunk$set(fig.width = 12, fig.asp = 1/2)
+knitr::opts_chunk$set(fig.width = 8, fig.asp = 1/2)
 require('magrittr') # load for "%>%" used to format DT tables
 
 ```
@@ -34,7 +36,7 @@ require('magrittr') # load for "%>%" used to format DT tables
  
   # bucket description of credit card transactions into budget categories
   creditCardHistory[ , ':='(category = homeBudget::addCategories(Description = Description,
-                                                myCategories = categoryPatternsExample))]
+                                    myCategories = homeBudget::categoryPatternsExample))]
   
   # summary of the continuous values for use in data.table.
   summaryDT <- function(x, digits = NULL, suffix = NULL){
@@ -199,9 +201,9 @@ ggplot2::ggplot(rollingSumData[!(category=="Total" | Amount==0)],
 
 ## raw data
 ```{r expenseTable, include=TRUE, echo=FALSE}
-  data.table::setorderv(creditCardHistory, "PostingDate")
-DT::datatable(creditCardHistory[ , .(PostingDate, Amount, category, Description)])
-  
+ data.table::setorderv(creditCardHistory, "PostingDate")
+ DT::datatable(creditCardHistory[ , .(PostingDate, Amount, category, Description)])
+
 ```
 
 #
