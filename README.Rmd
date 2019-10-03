@@ -42,7 +42,7 @@ vignette("getting-started", package = "homeBudget")
 <br>  
   
 #### Report Template  
-Here is an example of using `homeBudget` to create an [expense report](https://github.com/rkuttner7/homeBudget/blob/master/inst/rmd/budgetReport.html). Feel free to use this as a template for your own budgeting. The code can be found here:  
+Here is an example of using `homeBudget` to create an [expense report](https://rawcdn.githack.com/rkuttner7/homeBudget/2db2acb41b365d97f96192f5ae6b3d1fe4c9ea6e/inst/rmd/budgetReport.html). Feel free to use this as a template for your own budgeting. The code can be found here:  
 ```r
 system.file(package = "homeBudget", "rmd", "budgetReport.Rmd")
 ```
