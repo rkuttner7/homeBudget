@@ -42,7 +42,7 @@ vignette("getting-started", package = "homeBudget")
 #### Report Template
 
 Here is an example of using `homeBudget` to create an [expense
-report](https://rawcdn.githack.com/rkuttner7/homeBudget/2db2acb41b365d97f96192f5ae6b3d1fe4c9ea6e/inst/rmd/budgetReport.html).
+report](https://rawcdn.githack.com/rkuttner7/homeBudget/81f57188b928ebafdcfe738208c297778c4d20c1/inst/rmd/budgetReport.html).
 Feel free to use this as a template for your own budgeting. The code can
 be found here:
 
@@ -56,20 +56,3 @@ If you encounter a clear bug, please file a minimal reproducible example
 on [github](https://github.com/rkuttner7/homeBudget/issues).
 
 ## <br>
-
-&nbsp;
-<hr />
-<p style="text-align: center;">A work by <a href="https://github.com/rkuttner7/">Rafael Kuttner</a></p>
-<p style="text-align: center;"><span style="color: #808080;"><em>r.i.kuttner@gmail.com</em></span></p>
-
-<!-- Add icon library -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<!-- Add font awesome icons -->
-<p style="text-align: center;">
-    <a href="https://twitter.com/radjipoh" class="fa fa-twitter"></a>
-    <a href="https://www.linkedin.com/in/rkuttnerAnalyst/" class="fa fa-linkedin"></a>
-    <a href="https://github.com/rkuttner7/" class="fa fa-github"></a>
-</p>
-
-&nbsp;
