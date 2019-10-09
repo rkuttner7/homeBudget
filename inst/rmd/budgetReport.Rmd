@@ -1,22 +1,38 @@
 ---
 title: "Budget Report"
-author: "Rafael Kuttner"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     self_contained: FALSE
     lib_dir: libs  
-    highlight: tango
     mathjax: "default"
-    theme: united
-    toc: no
-    toc_depth: 3
-    toc_float: yes
+    toc: NO
+    includes:
+      after_body: footer.html
 ---
 
-Summary:  
+<style> 
+  #header { 
+    background: #2274cc; /* Old browsers */
+    background: -moz-linear-gradient(left, #2274cc 0%, #26c5d3 36%, #61bf61 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, #2274cc 0%,#26c5d3 36%,#61bf61 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, #2274cc 0%,#26c5d3 36%,#61bf61 100%); /* W3C, IE10+, FF16+, Chrome26+,  Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2274cc', endColorstr='#61bf61',GradientType=1 ); /* IE6-9 */
+    color: white;
+    height: 100px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-Expense report for home budgeting.
+  h1.title {
+    margin: auto;
+  }
+</style>
+
+<br>  
+
+#### Expense report for home budgeting.
 
 
 ```{r setup, include=FALSE}
@@ -133,6 +149,19 @@ $(document).ready(function() {
 </script>
 
 <div id="myDiv">
+<br>
+<br>
+<br>
+```{r, include = TRUE, echo = FALSE}
+
+ ggplot2::ggplot(rollingSumData, ggplot2::aes(x = reorder(category, rollAmount),
+                                  y = rollAmount, fill = category)) + 
+    ggplot2::geom_violin() +
+    ggplot2::labs(x = "Date", y = "Dollars",
+                title = "Density Plot of Monthly Spending") +
+    ggplot2::theme(legend.position="none")
+```
+  
 ```{r roll30Summary, include=TRUE, echo=FALSE}
 DT::datatable(monthRollSumSummary[ , .SD, 
                                  .SDcols = setdiff(names(monthRollSumSummary),
@@ -210,4 +239,5 @@ ggplot2::ggplot(rollingSumData[!(category=="Total" | Amount==0)],
 
 <br>
 <br>
+
 

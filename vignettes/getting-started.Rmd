@@ -1,5 +1,5 @@
 ---
-title: "Getting Started"
+title: "Getting Started with homeBudget"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{getting-started}
@@ -82,8 +82,7 @@ In subsequent sessions you can load the saved history of your credit card transa
 Access to your csv data may be limited to recent statements. For a comprehensive budget we will want to keep an ongoing history of all transactions by appending new csv statements onto the saved history `creditCardHistory.rda`.  
 
   
-Here's a typical scenerio:  
-you want to add recent statements from multiple credit cards to your home budget.  
+Here's a typical scenario, you want to add recent statements from multiple credit cards to your home budget.  
 ```r
  myOldData <- loadCreditCard(path = "/home/user/budget")
  myNewData <- read_csvCreditCard(file = "/home/user/budget/myNewChaseStatement.csv", 
@@ -95,7 +94,7 @@ you want to add recent statements from multiple credit cards to your home budget
                 creditCardHistory = allData)
 ```
 
-We load the prior data stored on your computer in the file `creditCardHistory.rda` into our current R session and name the table `myOldData`. Then we read in a new csv credit card statement named `myNewChaseStatement.csv` and call this `myNewData`. Similarly, there is new American Express data named `AmEx_20020601.csv` that is read into a table we will call `someAmExData`. To combine the new and old datasets we use `appendCreditCardData()` to get a complete history which we name `allData`. We save the complete history back to our computer, overwritting `creditCardHistory.rda`, for future use.
+We load the prior data stored on your computer in the file `creditCardHistory.rda` into our current R session and name the table `myOldData`. Then we read in a new csv credit card statement named `myNewChaseStatement.csv` and call this `myNewData`. Similarly, there is new American Express data named `AmEx_20020601.csv` that is read into a table we will call `someAmExData`. To combine the new and old datasets we use `appendCreditCardData()` to get a complete history which we name `allData`. We save the complete history back to our computer, overwriting `creditCardHistory.rda`, for future use.
 
 # Budget Categories
 
@@ -132,3 +131,22 @@ The description `'rent 2019 march'` has been assigned to `housing` because the s
   addCategories(Description = Description, myCategories)
 
 ```
+
+<br>
+<br>
+&nbsp;
+<hr />
+<p style="text-align: center;">A work by <a href="https://github.com/rkuttner7/">Rafael Kuttner</a></p>
+<p style="text-align: center;"><span style="color: #808080;"><em>r.i.kuttner@gmail.com</em></span></p>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Add font awesome icons -->
+<p style="text-align: center;">
+    <a href="https://twitter.com/radjipoh" class="fa fa-twitter"></a>
+    <a href="https://www.linkedin.com/in/rkuttnerAnalyst/" class="fa fa-linkedin"></a>
+    <a href="https://github.com/rkuttner7/" class="fa fa-github"></a>
+</p>
+
+&nbsp;

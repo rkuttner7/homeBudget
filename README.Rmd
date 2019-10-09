@@ -1,8 +1,12 @@
 ---
-output: github_document
+output: 
+  github_document:
+    includes:
+      after_body: footer.html
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -16,6 +20,7 @@ knitr::opts_chunk$set(
 # homeBudget
 
 <!-- badges: start -->
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
 
 The goal of homeBudget is to make monitoring expenses easy.
@@ -34,8 +39,8 @@ Windows users also must first install [Rtools](http://cran.rstudio.com/bin/windo
 
 ## Resources
 
-#### Vingette  
-For details on uploading csv statements as well as saving and loading your data see the `getting-started` vingette.
+#### Vignette  
+For details on uploading csv statements as well as saving and loading your data see the `getting-started` vignette.
 ```r
 vignette("getting-started", package = "homeBudget")
 ```
@@ -46,3 +51,10 @@ Here is an example of using `homeBudget` to create an [expense report](https://r
 ```r
 system.file(package = "homeBudget", "rmd", "budgetReport.Rmd")
 ```
+
+## Getting help
+
+If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/rkuttner7/homeBudget/issues).
+  
+<br>  
+---
