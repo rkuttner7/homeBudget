@@ -4,3 +4,5 @@
 ^README\.Rmd$
 ^\.Rhistory$
 ^LICENSE\.md$
+^inst/rmd/budgetReport_files$
+^inst/rmd/libs$
