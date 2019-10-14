@@ -42,7 +42,7 @@ vignette("getting-started", package = "homeBudget")
 #### Report Template
 
 Here is an example of using `homeBudget` to create an [expense
-report](https://rawcdn.githack.com/rkuttner7/homeBudget/81f57188b928ebafdcfe738208c297778c4d20c1/inst/rmd/budgetReport.html).
+report](https://rawcdn.githack.com/rkuttner7/homeBudget/b19caf80aa9c29556c046f4cb7e2c2682e51eb48/inst/rmd/budgetReport.html).
 Feel free to use this as a template for your own budgeting. The code can
 be found here:
 
