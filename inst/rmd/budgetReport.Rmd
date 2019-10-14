@@ -41,6 +41,8 @@ knitr::opts_knit$set(root.dir = (normalizePath(getwd())) )
 knitr::opts_chunk$set(fig.width = 8, fig.asp = 1/2)
 require('magrittr') # load for "%>%" used to format DT tables
 
+ggplot2::theme_set(ggthemes::theme_clean())
+
 ```
 
 ```{r setData_Func, include=TRUE, echo=FALSE}
@@ -139,6 +141,14 @@ require('magrittr') # load for "%>%" used to format DT tables
                                        "N_records",
                                        mycolnames[3:(length(mycolnames)-1)]))
   mycolnames <- NULL
+  
+    
+  # order categories by descending median rolling 28 day
+  rollingSumData[ , ':='(category = factor(x = category, ordered = TRUE, 
+                                         levels = monthRollSumSummary$category))]
+  creditCardHistory[ , ':='(category = factor(x = category, ordered = TRUE, 
+                                         levels = monthRollSumSummary$category))]
+
 ```
 
 
@@ -152,14 +162,18 @@ $(document).ready(function() {
 <br>
 <br>
 <br>
-```{r, include = TRUE, echo = FALSE}
+```{r roll30Density, include = TRUE, echo = FALSE}
 
- ggplot2::ggplot(rollingSumData, ggplot2::aes(x = reorder(category, rollAmount),
+ ggplot2::ggplot(rollingSumData, ggplot2::aes(x = category,
                                   y = rollAmount, fill = category)) + 
-    ggplot2::geom_violin() +
     ggplot2::labs(x = "Date", y = "Dollars",
                 title = "Density Plot of Monthly Spending") +
-    ggplot2::theme(legend.position="none")
+    ggplot2::theme(legend.position="none") +
+    ggplot2::geom_violin() + ggplot2::facet_wrap(~category, scales = "free_y", 
+                                              ncol = 3) +
+  ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank(),
+        axis.ticks.x = ggplot2::element_blank())
 ```
   
 ```{r roll30Summary, include=TRUE, echo=FALSE}
@@ -195,6 +209,19 @@ DT::datatable(monthRollSumSummary[ , .SD,
 
 ```
   
+### Rolling 
+```{r expensePlotRoll, include=TRUE, echo=FALSE,warning=FALSE,message=FALSE}
+ggplot2::ggplot(rollingSumData[!(category=="Total")],
+                ggplot2::aes(x = PostingDate, y = rollAmount)) +
+    ggplot2::labs(x = "Date", y = "Dollars",
+                  title = "28 day rolling sum", 
+                  subtitle = "Spending by Category") +
+    ggplot2::geom_line()+ggplot2::facet_wrap(~category, scales = "free_y", 
+                                              ncol = 3)
+
+```  
+
+
 ### Daily   
 ```{r expensePlot, include=TRUE, echo=FALSE}
 ggplot2::ggplot(creditCardHistory[,.(Amount = sum(Amount)),
@@ -205,24 +232,7 @@ ggplot2::ggplot(creditCardHistory[,.(Amount = sum(Amount)),
                   title = "Expenses per day", 
                   subtitle = "Spending by Category") +
     ggplot2::geom_point()+ggplot2::facet_wrap(~category, scales = "free_y", 
-                                              ncol = 3) +
-    ggplot2::scale_x_date(labels = scales::date_format("%m-%Y")) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle=30, hjust=1))
-
-```
-
-
-### Rolling 
-```{r expensePlotRoll, include=TRUE, echo=FALSE}
-ggplot2::ggplot(rollingSumData[!(category=="Total" | Amount==0)],
-                ggplot2::aes(x = PostingDate, y = rollAmount)) +
-    ggplot2::labs(x = "Date", y = "Dollars",
-                  title = "28 day rolling sum", 
-                  subtitle = "Spending by Category") +
-    ggplot2::geom_point()+ggplot2::facet_wrap(~category, scales = "free_y", 
-                                              ncol = 3) +
-    ggplot2::scale_x_date(labels = scales::date_format("%m-%Y")) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle=30, hjust=1))
+                                              ncol = 3) 
 
 ```
   

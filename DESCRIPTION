@@ -23,7 +23,9 @@ Imports:
 Suggests: 
     DT,
     ggplot2,
+    ggthemes,
     knitr,
+    magrittr,
     testthat,
     rmarkdown
 VignetteBuilder: knitr
