@@ -197,7 +197,7 @@ DT::datatable(monthRollSumSummary[ , .SD,
     ggplot2::labs(x = "Date", y = "Dollars",
                   title = "Total Spending", subtitle = "28 day rolling sum",
                   caption = "Highlighted area contains 50% of monthly spending & dashed line is the median") +
-    ggplot2::geom_point()  +
+    ggplot2::geom_line()  +
     ggplot2::geom_hline(yintercept = monthRollSumSummary[category=="Total"]$q50,
                         linetype = 2, size = 1,
                         colour="red") +
