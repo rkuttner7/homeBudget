@@ -7,6 +7,8 @@
 
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+[![Travis build
+status](https://travis-ci.org/rkuttner7/homeBudget.svg?branch=master)](https://travis-ci.org/rkuttner7/homeBudget)
 <!-- badges: end -->
 
 The goal of homeBudget is to make monitoring expenses easy. Keep a

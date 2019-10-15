@@ -6,3 +6,4 @@
 ^LICENSE\.md$
 ^inst/rmd/budgetReport_files$
 ^inst/rmd/libs$
+^\.travis\.yml$
