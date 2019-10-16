@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![Travis build status](https://travis-ci.org/rkuttner7/homeBudget.svg?branch=master)](https://travis-ci.org/rkuttner7/homeBudget)
+[![Coveralls test coverage](https://coveralls.io/repos/github/rkuttner7/homeBudget/badge.svg)](https://coveralls.io/r/rkuttner7/homeBudget?branch=master)
 <!-- badges: end -->
 
 The goal of homeBudget is to make monitoring expenses easy.

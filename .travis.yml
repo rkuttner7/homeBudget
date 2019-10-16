@@ -4,3 +4,12 @@ language: R
 cache: packages
 warnings_are_errors: true
 latex: false
+
+matrix:
+  fast_finish: true
+
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::coveralls(type = "all")'
