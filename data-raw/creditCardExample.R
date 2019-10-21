@@ -4,7 +4,7 @@
 
 # load raw csv data
 # expect a csv for each company listed in read_csvCreditCard()
-# exoect the csv to start with company name listed in read_csvCreditCard()
+# expect the csv to start with company name listed in read_csvCreditCard()
 # so that files are read in the proper order relative to argument `company`.
 outputDir <- system.file("extdata",
                          package = "homeBudget")
