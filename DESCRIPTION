@@ -20,13 +20,15 @@ RoxygenNote: 6.1.1
 Imports: 
     data.table,
     stringr
-Suggests: 
+Suggests:
+    covr, 
     DT,
     ggplot2,
     ggthemes,
     knitr,
+    lubridate,
     magrittr,
     testthat,
     rmarkdown,
-    covr
+    scales
 VignetteBuilder: knitr

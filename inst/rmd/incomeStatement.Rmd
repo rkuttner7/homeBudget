@@ -1,0 +1,263 @@
+---
+title: "Income Statement"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    self_contained: FALSE
+    lib_dir: libs  
+    mathjax: "default"
+    toc: NO
+    includes:
+      after_body: footer.html
+---
+
+<style> 
+  #header { 
+    background: #2274cc; /* Old browsers */
+    background: -moz-linear-gradient(left, #2274cc 0%, #26c5d3 36%, #61bf61 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, #2274cc 0%,#26c5d3 36%,#61bf61 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, #2274cc 0%,#26c5d3 36%,#61bf61 100%); /* W3C, IE10+, FF16+, Chrome26+,  Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2274cc', endColorstr='#61bf61',GradientType=1 ); /* IE6-9 */
+    color: white;
+    height: 100px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  h1.title {
+    margin: auto;
+  }
+</style>
+
+<br>  
+
+#### Income Statement
+
+The income statement (or profit & loss) measures the profitability of the home by comparing the income to the associated costs.
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = (normalizePath(getwd())) )
+
+knitr::opts_chunk$set(fig.width = 10, fig.asp = 1/2)
+require('magrittr') # load for "%>%" used to format DT tables
+
+ggplot2::theme_set(ggthemes::theme_clean())
+
+# time frame of report, reference point for setting the quarterly periods
+  cutoff <- Sys.Date()
+  
+  # Print P&L table for each period
+  incomeTable <- function(mytable, myperiod){
+    
+    mytablePeriod <- mytable[period==myperiod]
+    
+    if(nrow(mytablePeriod) == 0) return("No Data")
+    
+    tableTitle <- sprintf("P&L Quarter %i, %s to %s", 
+                      unique(mytablePeriod$period), 
+                      unique(mytablePeriod$origin_period),
+                      unique(mytablePeriod$cutoff_period))
+
+  incomeLength <- nrow(incomeDataSum[period==myperiod])
+  costLength <- nrow(costDataSum[period==myperiod])
+  
+  knitr::kable(mytablePeriod[ , .(category, Amount)], 
+               align = c('l', 'r'),
+               col.names = NULL, 
+               format = "html", 
+               caption = tableTitle) %>%
+    kableExtra::pack_rows("Revenue", start_row = 1, 
+                          end_row = incomeLength )  %>%
+    kableExtra::row_spec(row = incomeLength,
+                         bold = FALSE, 
+                     underline = TRUE)  %>%
+    kableExtra::add_indent(positions = incomeLength)  %>%
+    kableExtra::pack_rows("Expenses", 
+                          start_row = incomeLength+1, 
+                          end_row = (incomeLength+1)+
+                            (costLength-1)) %>%
+    kableExtra::row_spec(row = (incomeLength+1)+
+                            (costLength-1), bold = FALSE, 
+                         underline = TRUE, )  %>%
+    kableExtra::add_indent(positions = (incomeLength+1)+
+                            (costLength-1))  %>%
+    kableExtra::pack_rows("", 
+                          start_row = nrow(mytablePeriod), 
+                          end_row = nrow(mytablePeriod)) %>%
+    kableExtra::row_spec(row = nrow(mytablePeriod), bold = TRUE, 
+                         underline = TRUE)
+  }
+```
+
+```{r buildIncomeData, include=TRUE, echo=FALSE}
+
+  # number of overlapping days between the period
+  # between `x_start` to `x_End` and that from
+  # `origin` to `cutoff`.
+   overlap <- function(x_start, x_End, origin, cutoff){
+     min_end <- pmin(cutoff, x_End)
+     min_start <- pmax(origin, x_start)
+     pmax(min_end - min_start + 1, 0)
+   }
+   
+   # calculate the proportion of the income has been earned
+   #  by comparing the overlap with the date range specified
+   # by `orgin` and `cutoff`.
+   overlapAmount <- function(dt, origin, cutoff){
+     mycols <- setdiff(names(dt), "Amount")
+     # drop rows that do not overlap the time window
+     dt[ , c(list("Amount" = Amount * as.numeric(overlap(DateStart, DateEnd, 
+                                                      origin, cutoff)) / 
+                          as.numeric(DateEnd - DateStart)),
+             .SD), .SDcols = mycols][Amount > 0]
+   }
+   
+   # date range for each quarter with last quarter ending at cutoff.
+   quarterly_periods <- function(cutoff){
+     list(cutoff_period = cutoff - lubridate::days(c(0:3)*91),
+          origin_period = cutoff - lubridate::days((c(1:4)*91)-1),
+          period = 4:1)
+   }
+   
+   # income earned per quarter
+   quarterly_income <- function(dt, cutoff){
+     myquarterly_periods <- quarterly_periods(cutoff)
+
+     datalist = list()
+     for(i in 1:4){
+       dat <- overlapAmount(dt, myquarterly_periods$origin_period[i],
+                            myquarterly_periods$cutoff_period[i])
+       dat$period <- myquarterly_periods$period[i]
+       dat$origin_period <- myquarterly_periods$origin_period[i]
+       dat$cutoff_period <- myquarterly_periods$cutoff_period[i]
+       datalist[[i]] <- dat 
+     }
+     data.table::rbindlist(l = datalist)
+   }
+    
+   incomeDataPeriods <- quarterly_income(homeBudget::incomeExample, cutoff)
+```
+
+
+```{r buildCostData, include=TRUE, echo=FALSE}
+
+  # load data
+   costData <- data.table::copy(homeBudget::creditCardExample)
+
+  costData[ , ':='(category = homeBudget::addCategories(Description = Description,
+                              myCategories = homeBudget::categoryPatternsExample))]
+
+  # add information about the quarter in which the cost transaction occured
+  timePeriods <- data.table::as.data.table(quarterly_periods(cutoff))  
+  costData[ , ':='(dummy = PostingDate)]
+  data.table::setkey(costData, PostingDate, dummy)
+  data.table::setkey(timePeriods, origin_period, cutoff_period)
+
+  costDataPeriods <- data.table::foverlaps(x = costData, 
+                                           y = timePeriods, 
+                                           nomatch = 0L)
+  costData[ , ':='(dummy = NULL)]
+```
+
+```{r computeSummaries, include=FALSE}
+  # Summation per quarter
+  costDataSum <- data.table::rbindlist(l = list(costDataPeriods[ , 
+                                                          .(Amount = sum(Amount)), 
+                                              by = c("category",
+                                                     "origin_period",
+                                                     "cutoff_period", 
+                                                     "period")],
+                                    costDataPeriods[ , .(category = "Subtotal",
+                                                  Amount = sum(Amount)),
+                                              by = c("origin_period",
+                                                     "cutoff_period", 
+                                                     "period")]),
+                                    use.names = TRUE, fill = TRUE)
+
+  incomeDataSum <- data.table::rbindlist(l = list(
+    incomeDataPeriods[ , .(Amount = sum(Amount)), 
+                by = c("category",
+                       "origin_period",
+                       "cutoff_period", 
+                       "period")],
+    incomeDataPeriods[ , .(category = "Subtotal", Amount = sum(Amount)), 
+                by = c("origin_period",
+                       "cutoff_period", 
+                       "period")]),
+                                    use.names = TRUE, fill = TRUE)
+  # stack income and cost to calculate net profit
+  # -- set the sign of the Amount in cost negative to reflect losses.
+  stackSubtotals <- 
+    data.table::rbindlist(l = list(incomeDataSum[category == "Subtotal"],
+                                      costDataSum[category == "Subtotal"
+                                                  ][ , c(list(Amount = -1*Amount),
+                                                           .SD),
+                               .SDcols = setdiff(names(costDataSum),                                                                          "Amount")]),
+                               use.names = TRUE, fill = TRUE)
+  
+  netProfit <- stackSubtotals[, .(category = "Net Profit", 
+                                  Amount = sum(Amount)),
+                              by = c("origin_period",
+                                     "cutoff_period", 
+                                     "period")]
+  
+  # order from smallest to largest so that "Subtotal" is the final entry
+  # per quarter
+  data.table::setorder(x = costDataSum, 
+                       origin_period, cutoff_period, period,
+                       Amount
+                       )
+  data.table::setorder(x = incomeDataSum, 
+                       origin_period, cutoff_period, period,
+                       Amount
+                       )
+ mytable <- data.table::rbindlist(l = list(incomeDataSum, 
+                                 costDataSum,
+                                 netProfit), use.names = TRUE)
+  mytable[ , ':='( Amount = scales::dollar_format(negative_parens = TRUE
+                                                )(mytable$Amount))]
+  
+```
+
+
+
+
+# {.tabset}  
+
+## Quarter 1
+```{r PnLTable1, include=TRUE, echo=FALSE, class.source="indent", class.output="indent"}
+
+incomeTable(mytable, myperiod = 1)
+
+```
+
+
+## Quarter 2
+```{r PnLTable2, include=TRUE, echo=FALSE, class.source="indent", class.output="indent"}
+
+incomeTable(mytable, myperiod = 2)
+
+```  
+
+## Quarter 3
+```{r PnLTable3, include=TRUE, echo=FALSE, class.source="indent", class.output="indent"}
+
+incomeTable(mytable, myperiod = 3)
+
+```
+
+
+## Quarter 4
+```{r PnLTable4, include=TRUE, echo=FALSE, class.source="indent", class.output="indent"}
+
+incomeTable(mytable, myperiod = 4)
+
+```
+
+#
+
+<br>
+<br>
+
+

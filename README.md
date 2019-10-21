@@ -14,7 +14,7 @@ coverage](https://coveralls.io/repos/github/rkuttner7/homeBudget/badge.svg)](htt
 <!-- badges: end -->
 
 The goal of homeBudget is to make monitoring expenses easy. Keep a
-record of all spending in one place in a consistent form with custom
+record of all spending in one place, in a consistent form, with custom
 categories.
 
 ## Installation
@@ -43,7 +43,7 @@ vignette("getting-started", package = "homeBudget")
 
 <br>
 
-#### Report Template
+#### Report Templates
 
 Here is an example of using `homeBudget` to create an [expense
 report](https://rawcdn.githack.com/rkuttner7/homeBudget/de8a47f9feffa02b3128190e6ae4b3cd1bf12e41/inst/rmd/budgetReport.html).
@@ -52,6 +52,14 @@ be found here:
 
 ``` r
 system.file(package = "homeBudget", "rmd", "budgetReport.Rmd")
+```
+
+<br>  
+Track your net income with the quarterly profit and losses on your
+[income statements](). The code can be found here:
+
+``` r
+system.file(package = "homeBudget", "rmd", "incomeStatement.Rmd")
 ```
 
 ## Getting help
