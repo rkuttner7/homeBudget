@@ -45,7 +45,7 @@ require('magrittr') # load for "%>%" used to format DT tables
 ggplot2::theme_set(ggthemes::theme_clean())
 
 # time frame of report, reference point for setting the quarterly periods
-  cutoff <- Sys.Date()
+  cutoff <- as.Date("2020-06-07") # range(costData$PostingDate)[1]+91*4-1
   
   # Print P&L table for each period
   incomeTable <- function(mytable, myperiod){
