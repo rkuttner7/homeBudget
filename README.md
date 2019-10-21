@@ -57,7 +57,7 @@ system.file(package = "homeBudget", "rmd", "budgetReport.Rmd")
 <br>
 
 Track your net income with quarterly profit and losses on your [income
-statements](https://rawcdn.githack.com/rkuttner7/homeBudget/9057eb58b76471c6c514d3eeecb85330fe7742b3/inst/rmd/incomeStatement.html).
+statements](https://rawcdn.githack.com/rkuttner7/homeBudget/993ba55c95eb1b83a3c5230ed60e42fce95a58a8/inst/rmd/incomeStatement.html).
 The code can be found here:
 
 ``` r
