@@ -2,6 +2,7 @@
 #' @title readCreditCard_Chase
 #' @description
 #'   Read in Chase specific csv.
+#' @importFrom data.table :=
 #' @keywords internal
 #' @inheritParams read_csvCreditCard
 readCreditCard_Chase <- function(file){
@@ -34,7 +35,7 @@ readCreditCard_Chase <- function(file){
   dataCredit <- dataCredit[Details=='DEBIT' & !(Type %in% c("ACCT_XFER", "ATM"))]
 
 
-  dataCredit[ , ':='(PostingDate = as.Date(PostingDate, format = "%m/%d/%Y"))]
+  dataCredit[ , ':='(PostingDate = lubridate::mdy(PostingDate))]
 
   # spending is changed from negative to positive for consistency w/AmEx and clarity
   dataCredit[ , ':='(Amount = -1*Amount)]
@@ -44,6 +45,7 @@ readCreditCard_Chase <- function(file){
 #' @title read_csvCreditCard_AmEx
 #' @description
 #'   Read in American Express specific csv.
+#' @importFrom data.table :=
 #' @keywords internal
 #' @inheritParams read_csvCreditCard
 read_csvCreditCard_AmEx <- function(file){
@@ -88,7 +90,7 @@ read_csvCreditCard_AmEx <- function(file){
   dataCredit <- dataCredit[!(Description=="ONLINE PAYMENT - THANK YOU" &
                                      Amount < 0)]
 
-  dataCredit[ , ':='(PostingDate = as.Date(PostingDate, format = "%m/%d/%y"))]
+  dataCredit[ , ':='(PostingDate = lubridate::mdy(PostingDate))]
   dataCredit
 }
 
@@ -185,6 +187,8 @@ saveCreditCard <- function(path, creditCardHistory){
 #'   Duplicate records based on matching \code{'PostingDate', 'Amount', 'Description'}
 #'   are removed to avoid double counting.
 #' @param ... data.table(s) of credit card records
+#'
+#' @export
 appendCreditCardData <- function(...){
   dataList <- list(...)
 

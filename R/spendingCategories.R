@@ -7,7 +7,8 @@
 #' is contained within.
 #' @param string character vector; Input vector.
 #' @param pattern character vector; substring or pattern to search for.
-#' @seealso \code{\link[stringr:str_detect]{stringr::str_detect()}}
+#' @seealso
+#'   \code{\link[stringr:str_detect]{name}}
 #' @return logical vector of same length as input \code{string}.
 str_detect_any <- function(string, pattern) {
   pattern <- paste(pattern, collapse = "|")
