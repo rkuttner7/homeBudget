@@ -10,11 +10,14 @@ Grocery <- c("QFC", "MARKETIME FOODS","PCC",
              "H-MART US", "HMART",
              "CITY MARKET", "TOFU 101", "SEATTLE URBAN HONEY",
              "TARGET T", "BARTELL DRUG", "HAGGEN",
-             "COSTCO WHSE")
+             "COSTCO WHSE", 
+             "METROPOLITAN MARKET", "DAVIDSTEA")
 
 Housing <- c("STATE FARM INSURANCEBLOOMINGTON",
              "OFFICE DEPOT", "EDMONDS HARDWARE & PEDMONDS",
-             "DAISO",
+             "DAISO", "HOME GOODS PORTLAND",
+             "TARGET PORTLAND",
+             "CRATE&BARREL",
              "Rent")
 
 Entertainment <- c("MOSBY FARMS",
@@ -33,7 +36,13 @@ Entertainment <- c("MOSBY FARMS",
                    "GROUPON INC",
                    "HBO NOW",
                    "TM \\*TICKETMASTER",
-                   "The Black Tux", "AMC ONLINE")
+                   "The Black Tux", "AMC ONLINE", "SEPHORA",
+                   "ANTHROPOLOGIE", "CLUB MONACO", "ARITZIA U VILLAGE", 
+                   "GREEN LAKE JEWELRY WORK", "FOLLAIN", "KIEHL'S SEATTLE",
+                   "JOE BAE SALON", "THE MOTH 21", "GARY MANUEL AVEDA", 
+                   "GAP US", "OISELLE", "LOCCITANE", "KID S CLUB SEATTLE",
+                   "A EAGLE OUTFTR", "MANICA EP RELEAS",
+                   "BUFFALO EXCHANGE")
 
 Restaurant <- c("RESTAURANT",
                 "DAIRY QUEEN", "DIN TAI FUNG",
@@ -69,7 +78,15 @@ Restaurant <- c("RESTAURANT",
                 "TST\\*CICCHETTI", "PATXIS - BALLARD",
                 "PEASANT FOOD MANIFES",
                 "BURGERVILLE CENTRALIA", "WATARU",
-                "SKI HILL GRILL BRECKENRIDGE")
+                "SKI HILL GRILL BRECKENRIDGE", 
+                "BAMBOO SUSHI", "THE WALRUS AND SEATTLE",
+                "AFURI", "SUIKA SEATTLE", "MATSU SEATTLE",
+                "MAMA MELINA", "MYUNG DONG TOFU", "FRAN'S CHOCOLATES",
+                "STATESIDE SEATTLE", "CHERYL'S ON 12TH PORTLAND",
+                "MR. WEST CAFE BAR", "DELFINOS CHICAGO STY",
+                "VALHALLA SANDWICHES", "STRETCH THE NOODLE", 
+                "RAVENNA BREWING", "TAMALE BOY RUSSELL",
+                "SONIC DRIVE IN", "POKEWORKS")
 
 Bakery <- c("LE FOURNIL", "HAPPY LEMON",
             "LA PARISIENNE", "STARBUCKS",
@@ -90,10 +107,12 @@ Bakery <- c("LE FOURNIL", "HAPPY LEMON",
             "FUEL COFFEE", "CAFE LADRO",
             "SALT & STRAW ICE", "PARFAIT ICE CREAM",
             "OLD SCHOOL FROZEN", "KURTWOOD FARMS",
-            "LNH CAFE AND TEAHOUSSEATTLE")
+            "LNH CAFE AND TEAHOUSSEATTLE", "BAKERY NOUVEAU",
+            "MATCHA CAFE MAIKO", "BLUE STAR DONUT", "ZOKA COFFEE")
 
 Travel <- c("ALASKA AIRLINES",
-            "AIRBNB")
+            "AIRBNB", 
+            "HAWAIIAN AIRLINES")
 
 Utilities <- c("SEATTLE CITY LIGHT",
                "COMCAST",
@@ -116,9 +135,9 @@ Transportation <- c("BROWN BEAR", "CHEVRON",
 Donation <- c("FACEBK NetworkforGood",
               "SEATTLE HUMANE SOCIEBELLEVUE",
               "GG \\*RONALD MCDONALD",
-              "SHMC/FOUNDATIONS")
+              "SHMC/FOUNDATIONS", "SEATTLE HUMANE")
 
-Medical <- c("MED CTR")
+Medical <- c("MED CTR", "ULTRA CHIROPRACTIC", "ACTION SPORTS MASSAG")
 
 categoryPatternsExample <- list(Grocery = Grocery,
                                 Housing = Housing,
