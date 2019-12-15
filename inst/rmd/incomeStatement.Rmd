@@ -111,7 +111,7 @@ incomeTable <- function(mytable, myperiod){
 
   # add information about the quarter in which the cost transaction occured
   # convert date to POSIXct to match the type in timePeriods
-  costData[ , ':='(PostingDate = as.POSIXct(PostingDate))]
+  costData[ , ':='(PostingDate = lubridate::as_datetime(PostingDate))]
   costData[ , ':='(dummy = PostingDate)]
   data.table::setkey(costData, PostingDate, dummy)
   data.table::setkey(timePeriods, interval_start, interval_end)
