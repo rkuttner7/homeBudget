@@ -91,7 +91,8 @@ ggplot2::theme_set(ggthemes::theme_clean())
                              category = NULL){
     if(is.null(minDate)) minDate <- min(creditCardHistory$PostingDate)
     if(is.null(maxDate)) maxDate <- max(creditCardHistory$PostingDate)
-    padDates <- setdiff(seq.Date(minDate, maxDate, by = 1),
+    setdiff_date <- function(x, y) x[match(x, y, 0L) == 0L] # do not overide class
+    padDates <- setdiff_date(seq.Date(minDate, maxDate, by = 1),
                         creditCardHistory$PostingDate)
     if(length(padDates) > 0){
       allDatesDT <- data.table::data.table("PostingDate" = padDates,
