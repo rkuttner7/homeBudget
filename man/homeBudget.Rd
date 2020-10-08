@@ -3,7 +3,6 @@
 \docType{package}
 \name{homeBudget}
 \alias{homeBudget}
-\alias{homeBudget-package}
 \title{homeBudget: A package for computating the personal finances.}
 \description{
 The homeBudget package provides three categories of important functions:

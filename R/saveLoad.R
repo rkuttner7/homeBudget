@@ -1,98 +1,43 @@
 
-#' @title readCreditCard_Chase
+
+#' @title modifyCreditCard_Chase
 #' @description
-#'   Read in Chase specific csv.
+#'   Modify Chase to filter to only records related to spending.
+#'   Change the expense value from negative to positive for consistency.
 #' @importFrom data.table :=
 #' @keywords internal
 #' @inheritParams read_csvCreditCard
-readCreditCard_Chase <- function(file){
-  # define any unbound variables locally within a function
-  Amount <- Details <- PostingDate <- Type <- NULL
-
-  dataCredit <- data.table::fread(file = file,
-                                 sep = ",", header = TRUE, skip = 0)
-
-  # Confirm naming convention from banks has not changed
-  # and essential columns exist
-  needCols <- c("Posting Date", "Amount", "Description")
-  if(! all(needCols %in% names(dataCredit))){
-    missingCol <- toString(shQuote(setdiff(needCols,
-                          names(dataCredit))))
-    stop(gettextf("CSV is missing expected columns:\n  {%s}.",
-                  missingCol, domain = NA),
-         call. = FALSE)
-  }
-
-  # remove white space between each column name
-  newNames <- gsub(pattern = " ", replacement =  "",
-                   x = names(dataCredit),
-                   fixed = TRUE)
-  data.table::setnames(dataCredit,
-                       old = names(dataCredit),
-                       new = newNames)
+modifyCreditCard_Chase <- function(dataCredit){
+  Details <- Amount <- Type <- NULL
 
   # only include records related to spending
-  dataCredit <- dataCredit[Details=='DEBIT' & !(Type %in% c("ACCT_XFER", "ATM"))]
-
-
-  dataCredit[ , ':='(PostingDate = lubridate::mdy(PostingDate))]
+  dataCredit <- dataCredit[Details=='DEBIT' &
+                             #!(Type %in% c("ACCT_XFER", "ATM"))
+                           Type == "DEBIT_CARD"
+                           ]
 
   # spending is changed from negative to positive for consistency w/AmEx and clarity
   dataCredit[ , ':='(Amount = -1*Amount)]
   dataCredit
 }
 
-#' @title read_csvCreditCard_AmEx
+#' @title modifyCreditCard_AmEx
 #' @description
-#'   Read in American Express specific csv.
-#' @importFrom data.table :=
+#'   Modify American Express to exclude monthly payments.
 #' @keywords internal
 #' @inheritParams read_csvCreditCard
-read_csvCreditCard_AmEx <- function(file){
-  # define any unbound variables locally within a function
-  Amount <- Description <- PostingDate <-  NULL
-
-  # -- set column 'Phone Number' to type character to avoid error in View() when
-  #    record is missing.
-  dataCredit <- data.table::fread(file = file,
-                                     sep = ",", header = TRUE, skip = 0,
-                                     colClasses = list(character = 'Phone Number'),
-                                     stringsAsFactors = FALSE)
-
-  # Confirm naming convention from banks has not changed
-  # and essential columns exist
-  needCols <- c("Date", "Amount", "Appears On Your Statement As")
-  if(! all(needCols %in% names(dataCredit))){
-    missingCol <- toString(shQuote(setdiff(needCols,
-                                           names(dataCredit))))
-    stop(gettextf("CSV is missing expected columns:\n  {%s}.",
-                  missingCol, domain = NA),
-         call. = FALSE)
-  }
-
-  # remove white space between each column name
-  newNames <- gsub(pattern = " ", replacement =  "",
-                   x = names(dataCredit),
-                   fixed = TRUE)
-
-  # Modify Names for consitency
-  newNames[newNames  %in% c("Date", "Description", "Type",
-                            "AppearsOnYourStatementAs",
-                            "AdditionalInformation")] <-
-    c("PostingDate", "Company", "Details", "Description", "AdditionalInfo")
-
-  data.table::setnames(dataCredit,
-                       old = names(dataCredit),
-                       new = newNames)
+modifyCreditCard_AmEx <- function(dataCredit){
+  Description <- Amount <- NULL
 
   # only include records related to spending
   # -- remove paying off American Express bill from expense report
   dataCredit <- dataCredit[!(Description=="ONLINE PAYMENT - THANK YOU" &
-                                     Amount < 0)]
+                               Amount < 0)]
+  dataCredit <- dataCredit[!(Description=="CUSTOMER SERVICE PAYMENT THANK YOU")]
 
-  dataCredit[ , ':='(PostingDate = lubridate::mdy(PostingDate))]
   dataCredit
 }
+
 
 #' @title read_csvCreditCard
 #' @description
@@ -100,35 +45,93 @@ read_csvCreditCard_AmEx <- function(file){
 #'   and set variables to proper type for analysis.
 #' @param file the name of the file path which the data are to be
 #'   read from.
+#' @param Date name of the csv column header for the posting transaction date
+#' @param Amount name of the csv column header for the transaction amount
+#' @param Description name of the csv column header purchase description
 #' @param company the name of company responsible for the
 #'   credit card. Choose among: {Chase, American Express}
 #' @examples
 #'   \dontrun{
 #'     read_csvCreditCard(file = "/budget/data/someChaseStatement.csv",
+#'                        Date = "Posting Date",
+#'                        Amount = "Amount",
+#'                        Description = "Description",
 #'                        company = "Chase")
 #'    }
 #' @return data.table of new credit card transactions
 #'
+#' @importFrom data.table :=
 #' @export
 read_csvCreditCard <- function(file,
-                              company = c("Chase", "American Express")){
-  if(missing(company)) {
-    null_options <- toString(shQuote(eval(formals(sys.function())$company)))
-    stop(gettextf("You need to specify a value for `company`.\n  Choose one of {%s}.",
-                  null_options, domain = NA))
+                                Date,
+                                Amount,
+                                Description,
+                                company = c("Chase", "American Express")){
+  # define any unbound variables locally within a function
+  PostingDate <- NULL
+
+  # column final variable names
+  col_names <- c("PostingDate", "Amount", "Description")
+  col_names_initial <- c(Date, Amount, Description)
+
+  # -- set column 'Phone Number' to type character to avoid error in View() when
+  #    record is missing.
+  # dataCredit <- data.table::fread(file = file,
+  #                                 sep = ",", header = TRUE, skip = 0,
+  #                                 #colClasses = list(character = 'Phone Number'),
+  #                                 stringsAsFactors = FALSE)
+  dataCredit <- data.table::as.data.table(readr::read_csv(file = file))
+
+  # Confirm naming convention from banks has not changed
+  # and essential columns exist
+  if(! all(col_names_initial %in% names(dataCredit))){
+    missingCol <- toString(shQuote(setdiff(col_names_initial,
+                                           names(dataCredit))))
+    stop(gettextf("CSV is missing expected columns:\n\t%s",
+                  paste(missingCol, collapse = "\n\t"),
+                  domain = NA),
+         call. = FALSE)
   }
+
+  # Modify Names for consitency
+  fixNames <- setdiff(col_names_initial, col_names)
+  fixNames_i <- which(! col_names_initial %in% col_names)
+
+  if(length(fixNames) > 0){
+    # Name conflicts due to other column already having prefered variable name
+    conflictNames <- intersect(col_names[fixNames_i], names(dataCredit))
+    if(length(conflictNames) > 0) {
+      conflictNames_new <- paste0(conflictNames, "_2")
+      } else conflictNames_new <- c()
+
+    data.table::setnames(dataCredit,
+                         old = c(fixNames, conflictNames),
+                         new = c(col_names[fixNames_i], conflictNames_new))
+  }
+
+  # remove white space between each column name
+  newNames <- gsub(pattern = " ", replacement =  "",
+                   x = names(dataCredit),
+                   fixed = TRUE)
+  if(length(setdiff(newNames, names(dataCredit))) > 0){
+    data.table::setnames(dataCredit,
+                         old = names(dataCredit),
+                         new = newNames)
+  }
+
+  dataCredit[ , ':='(PostingDate = lubridate::mdy(PostingDate))]
+
   company <-  match.arg(company)
 
-  switch(stringr::str_replace(string = company,
+  dataCreditMod <- switch(stringr::str_replace(string = company,
                               pattern = " ",
                               replacement = ""),
-         Chase = readCreditCard_Chase(file),
-         AmericanExpress = read_csvCreditCard_AmEx(file),
-         stop(gettextf("csv load function not found for `company` \"%s\".",
-                       company, domain = NA))
-         )
+         Chase = modifyCreditCard_Chase(dataCredit),
+         AmericanExpress = modifyCreditCard_AmEx(dataCredit),
+         stop(gettextf("modification function not found for `company` \"%s\".",
+                       company, domain = NA)) )
+  dataCreditMod
 }
-
 #' @title loadCreditCard
 #' @description
 #'   Load the credit card history data \code{creditCardHistory}

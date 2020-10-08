@@ -50,8 +50,11 @@ library(homeBudget)
 
 To start your home budget use the function `read_csvCreditCard()` to load your credit card statement into R. The statements must be csv text documents which can be downloaded from your online bank account. For example, if you have saved your most recent JP Morgan Chase statement in the directory `/home/user/budget` as `myChaseStatement.csv` you would load it using the following:
 
-```r
+``` r
   read_csvCreditCard(file = "/home/user/budget/myChaseStatement.csv", 
+                     Date = "Posting Date",
+                     Amount = "Amount",
+                     Description = "Description",
                      company = "Chase")
 ```
 

@@ -4,11 +4,23 @@
 \alias{read_csvCreditCard}
 \title{read_csvCreditCard}
 \usage{
-read_csvCreditCard(file, company = c("Chase", "American Express"))
+read_csvCreditCard(
+  file,
+  Date,
+  Amount,
+  Description,
+  company = c("Chase", "American Express")
+)
 }
 \arguments{
 \item{file}{the name of the file path which the data are to be
 read from.}
+
+\item{Date}{name of the csv column header for the posting transaction date}
+
+\item{Amount}{name of the csv column header for the transaction amount}
+
+\item{Description}{name of the csv column header purchase description}
 
 \item{company}{the name of company responsible for the
 credit card. Choose among: {Chase, American Express}}
@@ -23,6 +35,9 @@ Load raw credit card csv data into R as a data.table
 \examples{
   \dontrun{
     read_csvCreditCard(file = "/budget/data/someChaseStatement.csv",
+                       Date = "Posting Date",
+                       Amount = "Amount",
+                       Description = "Description",
                        company = "Chase")
    }
 }

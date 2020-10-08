@@ -4,13 +4,15 @@
 \name{incomeExample}
 \alias{incomeExample}
 \title{Home budget sample income data}
-\format{A data.table with 2 rows and 4 variables
+\format{
+A data.table with 2 rows and 4 variables
 \describe{
 \item{DateStart}{date employment began for given pay rate}
 \item{DateEnd}{date that employment ended for given pay rate}
 \item{Amount}{post tax dollars earned over the date range}
 \item{Category}{text describing the company of employment and position at that time}
-}}
+}
+}
 \usage{
 incomeExample
 }

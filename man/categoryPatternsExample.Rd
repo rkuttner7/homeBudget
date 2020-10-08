@@ -4,7 +4,8 @@
 \name{categoryPatternsExample}
 \alias{categoryPatternsExample}
 \title{Home budget sample spending category patterns}
-\format{A list with 9 named character vectors
+\format{
+A list with 9 named character vectors
 \describe{
 \item{Grocery}{Food shopping}
 \item{Housing}{Rent, home repair, home insurance, mortgage installments}
@@ -17,7 +18,8 @@ licensing fees, bus fare}
 \item{Donation}{Charitable giving}
 \item{Medical}{Medical & Dental health insurance: fixed monthly premiums,
 out-of-pocket expenses, emergency visits}
-}}
+}
+}
 \usage{
 categoryPatternsExample
 }
