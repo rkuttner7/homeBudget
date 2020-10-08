@@ -20,5 +20,5 @@ Returns a logical vector indicating if any pattern
 is contained within.
 }
 \seealso{
-\code{\link[stringr:str_detect]{stringr::str_detect()}}
+\code{\link[stringr:str_detect]{name}}
 }

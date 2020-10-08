@@ -33,3 +33,30 @@ test_that("addCategories fails when description matches multiple categories", {
   expect_error(addCategories(Description = c("gas rent"), myCategories))
 
 })
+
+
+test_that("addCategories matches two distinct substrings", {
+  similar_patterns_fail <- list(Housing = c("TARGET .*[NORTHGATE]"),
+                           Grocery = c("TARGET T"))
+  similar_patterns <- list(Housing = "(?=.*TARGET)(?=.*NORTHGATE)",
+                           Grocery = c("TARGET T"))
+
+
+  expect_error(addCategories(Description = "TARGET T- 302 NE North Seattle WA            03/23",
+                             similar_patterns_fail))
+  expect_silent(addCategories(Description = c("TARGET T- 302 NE North Seattle WA            03/23",
+                                              "TARGET SOMETHING    NORTHGATE BLAH"),
+                              similar_patterns))
+  expected <- c("Grocery", "Housing")
+  expect_equal(addCategories(Description = c("TARGET T- 302 NE North Seattle WA            03/23",
+                                             "TARGET SOMETHING    NORTHGATE BLAH"),
+                             similar_patterns), expected)
+
+  # matche 2 distinct phrases
+  longer_patterns <- list(right = "(?=.*KITCHEN COLLECTION)(?=.*LINCOLN CITY OR)")
+
+  expect_equal(addCategories(Description = c("KITCHEN COLLECTION something LINCOLN CITY OR",
+                                             "LINCOLN CITY OR"),
+                             longer_patterns),
+               expected = c("right", "MISSING"))
+})
