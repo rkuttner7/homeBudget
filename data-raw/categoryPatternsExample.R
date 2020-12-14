@@ -25,22 +25,30 @@ Housing <- c("STATE FARM INSURANCEBLOOMINGTON",
              "(?=.*TARGET)(?=.*PORTLAND)", "(?=.*TARGET)(?=.*NORTHGATE)",
              "(?=.*TARGET)(?=.*RENTON)", "(?=.*TARGET)(?=.*SEATTLE)",
              "(?=.*TARGET)(?=.*LYNNWOOD)", "(?=.*TARGET)(?=.*FACTORIA)",
+             "(?=.*TARGET)(?=.*North Seattle)",
              "(?=.*TJ MAXX)(?=.* BELLEVUE)",
              "CRATE&BARREL", "CB2 SEATTLE", "SOHA LIVING",
              "PAPYRUS", "SKY GARDEN CENTER", "RAVENNA GARDENS",
              "(?=.*KITCHEN COLLECTION)(?=.*LINCOLN CITY OR)",
              "(?=.*MRS COOKS)(?=.*SEATTLE)",
              "Rent",
-             "USPS PO", "LOWE'S GREAT STATE BURSEATTLEOF RAINIER",
+             "FEDEX",
+             "USPS PO", "LOWE'S OF RAINIER",
              "MAPLE LEAF ACE", "SWANSONS NURSERY",
              "HOME DEPOT", "CORRYS FINE DRY",
-             "PHOTOSTAMPS EL SEGUNDO")
+             "MICHAELS STORES",
+             "PHOTOSTAMPS EL SEGUNDO",
+             "(?=.*REI SPRK)(?=.*SEATTLE)",
+             "TURBOTAX",
+             "KING CO RECORDERS")
 
 Entertainment <- c("MOSBY FARMS",
                    "THE PINE BOX", "ORCAS LANDING HOTEL",
-                   "SEATTLE PARKS AND REC", "NORTHWEST OUTDOOR", "RACHELS GINGER BEER",
-                   "STEAMGAMES.COM", "LAUGHING PLANET CAFE L", "MCDONALD'S",
-                   "MEEKONG BAR", "ROCK BOX",
+                   "SEATTLE PARKS AND REC", "NORTHWEST OUTDOOR",
+                   "RACHELS GINGER BEER",
+                   "LAUGHING PLANET CAFE L", "MCDONALD'S",
+                   "(?=.*LE PANIER)(?=.*SEATTLE)",
+                   "MEEKONG BAR", "LOWE'S OF RAINIERROCK BOX",
                    "THE TWO BELLS BAR",
                    "SIFF|SHALIMAR RESTAURANT",
                    "FORECASTERS PUBLIC HOUSE",
@@ -71,7 +79,10 @@ Entertainment <- c("MOSBY FARMS",
                    "SEES CANDIES", "(?=.*PAPRYUS)(?=.*SEATTLE)",
                    "(?=.*FLATSTICK PUB)(?=.*Seattle)",
                    "(?=.*FLATSTICK PUB)(?=.*SEATTLE)",
-                   "ROBOT VS SLOTH", "STEAM GAMES WA")
+                   "ROBOT VS SLOTH",
+                   "STEAM GAMES WA", "ETSY.COM",
+                   "MOON VALLEY ORGADEMING",
+                   "MUD BAY")
 
 Restaurant <- c("RESTAURANT",
                 "DAIRY QUEEN", "DIN TAI FUNG",
@@ -121,7 +132,8 @@ Restaurant <- c("RESTAURANT",
                 "HUI LAU SHAN", " GREAT STATE BUR",
                 "SHAKE SHACK", "(?=.*SOUTHPAW)(?=.*SEATTLE)",
                 "PAGLIACCI", "YALLA SEATTLE",
-                "MILK DRUNK", "SHUGS, LLC SEATTLE")
+                "MILK DRUNK", "SHUGS, LLC SEATTLE",
+                "UNIVERSITY KIDD")
 
 Bakery <- c("LE FOURNIL", "HAPPY LEMON",
             "LA PARISIENNE",
@@ -151,7 +163,8 @@ Bakery <- c("LE FOURNIL", "HAPPY LEMON",
             "(?=.*RAISED DOUGHNUTS)(?=.*Seattle)", "LE BON BAKERY",
             "(?=.*LE REVE)(?=.*SEATTLE)", "GENERAL PORPOISSEATTLE",
             "TAPIOCA EXPRESS", "BELLE EPICUREANSEATTLE",
-            "CRUMBLE & FLAKE", "LE PANIER SEATTLE")
+            "CRUMBLE & FLAKE", "LE PANIER SEATTLE",
+            "STARBUCKS STORE", "SWEDISH FH STARBUCKS")
 
 Travel <- c("ALASKA AIRLINES",
             "AIRBNB",
@@ -187,7 +200,8 @@ Travel <- c("ALASKA AIRLINES",
             "HITCHCOCK DELICBAINBRIDGE",
             "(?=.*DUFRY ST)(?=.*SEATAC)",
             "CITY OF PORTLAND DEPPORTLAND", "SMART PARK 10TH & YAPORTLAND",
-            "WASHINGTON PARK PARKPORTLAND ")
+            "WASHINGTON PARK PARKPORTLAND",
+            "(?=.*WAL-MART)(?=.*WARRENTON)")
 
 Utilities <- c("SEATTLE CITY LIGHT",
                "PUGET SOUND ENERGY",
